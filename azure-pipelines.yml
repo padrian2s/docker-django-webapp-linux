@@ -17,3 +17,25 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'codeconvacr01-1931'
+    repository: 'sample2'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: '1'
+
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'codeconv-rg01_serviceconnection'
+    appType: 'webAppContainer'
+    WebAppName: 'codeconv-app01'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'codeconv-rg01'
+    SlotName: 'production'
+    DockerNamespace: 'codeconvacr01.azurecr.io'
+    DockerRepository: 'sample2'
+    DockerImageTag: '1'
